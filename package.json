@@ -16,8 +16,7 @@
   "dependencies": {
     "bluebird": "^3.3.4",
     "co-use": "^1.1.0",
-    "is-generator": "^1.0.2",
-    "lodash": "^4.6.1"
+    "is-generator": "^1.0.2"
   },
   "devDependencies": {
     "mocha": "^2.4.5",
