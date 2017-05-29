@@ -1,5 +1,7 @@
 # baser.js
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/overlookmotel/baser.svg)](https://greenkeeper.io/)
+
 # Base for building modularised apps with plugins
 
 ## Current status
