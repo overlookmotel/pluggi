@@ -13,15 +13,17 @@
   "bugs": {
     "url": "https://github.com/overlookmotel/baser/issues"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
     "chai": "^4.1.2",
     "coveralls": "^3.0.0",
     "cross-env": "^5.1.4",
     "istanbul": "^0.4.5",
     "jshint": "^2.9.5",
-    "mocha": "^5.1.0"
+    "mocha": "^5.1.0",
+    "sinon": "^6.1.3",
+    "sinon-chai": "^3.2.0",
+    "spy-module": "^1.0.0"
   },
   "keywords": [
     "base",
