@@ -1,17 +1,19 @@
-// --------------------
-// baser module
-// Tests
-// --------------------
+/* --------------------
+ * baser module
+ * Tests
+ * ------------------*/
 
-// modules
-var chai = require('chai'),
-	expect = chai.expect,
+'use strict';
+
+// Modules
+const chai = require('chai'),
+	{expect} = chai,
 	Baser = require('../lib/');
 
-// init
+// Init
 chai.config.includeStack = true;
 
-// tests
+// Tests
 
 /* jshint expr: true */
 /* global describe, it */
