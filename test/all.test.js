@@ -61,7 +61,7 @@ describe('`.plugin()`', function() {
 			this.options = {localOpt: 2};
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.b.plugin('plugName', this.plugin, this.options);
+			this.ret = this.b.plugin('plugName', this.plugin, this.options);
 		});
 
 		it('calls plugin', function() {
@@ -88,6 +88,10 @@ describe('`.plugin()`', function() {
 			this.b.plugin('plugName2', () => {}, this.options);
 			expect(this.b.plugins.plugName2).to.deep.equal({});
 		});
+
+		it('returns `app` for chaining', function() {
+			expect(this.ret).to.equal(this.b);
+		});
 	});
 
 	describe('with arguments (name, plugin)', function() {
@@ -95,7 +99,7 @@ describe('`.plugin()`', function() {
 			this.b = new Pluggi({plugName: this.globalOptions});
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.b.plugin('plugName', this.plugin);
+			this.ret = this.b.plugin('plugName', this.plugin);
 		});
 
 		it('calls plugin', function() {
@@ -118,6 +122,10 @@ describe('`.plugin()`', function() {
 			this.b.plugin('plugName2', () => {});
 			expect(this.b.plugins.plugName2).to.deep.equal({});
 		});
+
+		it('returns `app` for chaining', function() {
+			expect(this.ret).to.equal(this.b);
+		});
 	});
 
 	describe('with arguments (plugin, options)', function() {
@@ -127,7 +135,7 @@ describe('`.plugin()`', function() {
 			this.options = {localOpt: 2};
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.b.plugin(this.plugin, this.options);
+			this.ret = this.b.plugin(this.plugin, this.options);
 		});
 
 		it('calls plugin', function() {
@@ -160,6 +168,10 @@ describe('`.plugin()`', function() {
 				this.b.plugin(function() {}, this.options);
 			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
 		});
+
+		it('returns `app` for chaining', function() {
+			expect(this.ret).to.equal(this.b);
+		});
 	});
 
 	describe('with arguments (plugin)', function() {
@@ -168,7 +180,7 @@ describe('`.plugin()`', function() {
 			this.b = new Pluggi({proxy: this.globalOptions});
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.b.plugin(this.plugin);
+			this.ret = this.b.plugin(this.plugin);
 		});
 
 		it('calls plugin', function() {
@@ -197,6 +209,10 @@ describe('`.plugin()`', function() {
 				this.b.plugin(function() {});
 			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
 		});
+
+		it('returns `app` for chaining', function() {
+			expect(this.ret).to.equal(this.b);
+		});
 	});
 
 	describe('with arguments (name, options)', function() {
@@ -206,7 +222,7 @@ describe('`.plugin()`', function() {
 				this.options = {localOpt: 2};
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.b.plugin('spy-module', this.options);
+				this.ret = this.b.plugin('spy-module', this.options);
 			});
 
 			afterEach(function() {
@@ -232,6 +248,10 @@ describe('`.plugin()`', function() {
 			it('records plugin return value in plugins object', function() {
 				expect(this.b.plugins.spyModule).to.equal(this.res);
 			});
+
+			it('returns `app` for chaining', function() {
+				expect(this.ret).to.equal(this.b);
+			});
 		});
 
 		describe('with PLUGIN_PREFIX defined', function() {
@@ -241,7 +261,7 @@ describe('`.plugin()`', function() {
 				this.options = {localOpt: 2};
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.b.plugin('module', this.options);
+				this.ret = this.b.plugin('module', this.options);
 			});
 
 			afterEach(function() {
@@ -266,6 +286,10 @@ describe('`.plugin()`', function() {
 
 			it('records plugin return value in plugins object', function() {
 				expect(this.b.plugins.module).to.equal(this.res);
+			});
+
+			it('returns `app` for chaining', function() {
+				expect(this.ret).to.equal(this.b);
 			});
 		});
 	});
@@ -276,7 +300,7 @@ describe('`.plugin()`', function() {
 				this.b = new Pluggi({spyModule: this.globalOptions});
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.b.plugin('spy-module');
+				this.ret = this.b.plugin('spy-module');
 			});
 
 			afterEach(function() {
@@ -298,6 +322,10 @@ describe('`.plugin()`', function() {
 			it('records plugin return value in plugins object', function() {
 				expect(this.b.plugins.spyModule).to.equal(this.res);
 			});
+
+			it('returns `app` for chaining', function() {
+				expect(this.ret).to.equal(this.b);
+			});
 		});
 
 		describe('with PLUGIN_PREFIX defined', function() {
@@ -306,7 +334,7 @@ describe('`.plugin()`', function() {
 				this.b[Pluggi.PLUGIN_PREFIX] = 'spy';
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.b.plugin('module');
+				this.ret = this.b.plugin('module');
 			});
 
 			afterEach(function() {
@@ -327,6 +355,10 @@ describe('`.plugin()`', function() {
 
 			it('records plugin return value in plugins object', function() {
 				expect(this.b.plugins.module).to.equal(this.res);
+			});
+
+			it('returns `app` for chaining', function() {
+				expect(this.ret).to.equal(this.b);
 			});
 		});
 	});
