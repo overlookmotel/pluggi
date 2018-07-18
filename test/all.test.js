@@ -25,19 +25,19 @@ chai.config.includeStack = true;
 describe('Constructor', function() {
 	beforeEach(function() {
 		this.options = {globalOpt: 1};
-		this.b = new Pluggi(this.options);
+		this.app = new Pluggi(this.options);
 	});
 
 	it('creates Pluggi instance', function() {
-		expect(this.b).to.be.instanceof(Pluggi);
+		expect(this.app).to.be.instanceof(Pluggi);
 	});
 
 	it('saves options', function() {
-		expect(this.b.options).to.equal(this.options);
+		expect(this.app.options).to.equal(this.options);
 	});
 
 	it('initializes empty `plugins` object', function() {
-		expect(this.b.plugins).to.deep.equal({});
+		expect(this.app.plugins).to.deep.equal({});
 	});
 
 	it('Exports static property PLUGIN_PREFIX', function() {
@@ -57,11 +57,11 @@ describe('`.plugin()`', function() {
 
 	describe('with arguments (name, plugin, options)', function() {
 		beforeEach(function() {
-			this.b = new Pluggi({plugName: this.globalOptions});
+			this.app = new Pluggi({plugName: this.globalOptions});
 			this.options = {localOpt: 2};
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.b.plugin('plugName', this.plugin, this.options);
+			this.ret = this.app.plugin('plugName', this.plugin, this.options);
 		});
 
 		it('calls plugin', function() {
@@ -77,29 +77,29 @@ describe('`.plugin()`', function() {
 		});
 
 		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.b);
+			expect(this.plugin).to.be.calledOn(this.app);
 		});
 
 		it('records plugin return value in plugins object', function() {
-			expect(this.b.plugins.plugName).to.equal(this.res);
+			expect(this.app.plugins.plugName).to.equal(this.res);
 		});
 
 		it('when plugin returns undefined, records empty object in plugins object', function() {
-			this.b.plugin('plugName2', () => {}, this.options);
-			expect(this.b.plugins.plugName2).to.deep.equal({});
+			this.app.plugin('plugName2', () => {}, this.options);
+			expect(this.app.plugins.plugName2).to.deep.equal({});
 		});
 
 		it('returns `app` for chaining', function() {
-			expect(this.ret).to.equal(this.b);
+			expect(this.ret).to.equal(this.app);
 		});
 	});
 
 	describe('with arguments (name, plugin)', function() {
 		beforeEach(function() {
-			this.b = new Pluggi({plugName: this.globalOptions});
+			this.app = new Pluggi({plugName: this.globalOptions});
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.b.plugin('plugName', this.plugin);
+			this.ret = this.app.plugin('plugName', this.plugin);
 		});
 
 		it('calls plugin', function() {
@@ -111,31 +111,31 @@ describe('`.plugin()`', function() {
 		});
 
 		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.b);
+			expect(this.plugin).to.be.calledOn(this.app);
 		});
 
 		it('records plugin return value in plugins object', function() {
-			expect(this.b.plugins.plugName).to.equal(this.res);
+			expect(this.app.plugins.plugName).to.equal(this.res);
 		});
 
 		it('records empty object in plugins object when plugin returns undefined', function() {
-			this.b.plugin('plugName2', () => {});
-			expect(this.b.plugins.plugName2).to.deep.equal({});
+			this.app.plugin('plugName2', () => {});
+			expect(this.app.plugins.plugName2).to.deep.equal({});
 		});
 
 		it('returns `app` for chaining', function() {
-			expect(this.ret).to.equal(this.b);
+			expect(this.ret).to.equal(this.app);
 		});
 	});
 
 	describe('with arguments (plugin, options)', function() {
 		beforeEach(function() {
 			// NB name of function returned by `sinon.fake()` is 'proxy'
-			this.b = new Pluggi({proxy: this.globalOptions});
+			this.app = new Pluggi({proxy: this.globalOptions});
 			this.options = {localOpt: 2};
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.b.plugin(this.plugin, this.options);
+			this.ret = this.app.plugin(this.plugin, this.options);
 		});
 
 		it('calls plugin', function() {
@@ -151,36 +151,36 @@ describe('`.plugin()`', function() {
 		});
 
 		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.b);
+			expect(this.plugin).to.be.calledOn(this.app);
 		});
 
 		it('records plugin return value in plugins object', function() {
-			expect(this.b.plugins.proxy).to.equal(this.res);
+			expect(this.app.plugins.proxy).to.equal(this.res);
 		});
 
 		it('records empty object in plugins object when plugin returns undefined', function() {
-			this.b.plugin(function plugName2() {}, this.options);
-			expect(this.b.plugins.plugName2).to.deep.equal({});
+			this.app.plugin(function plugName2() {}, this.options);
+			expect(this.app.plugins.plugName2).to.deep.equal({});
 		});
 
 		it('throws when plugin function is nameless', function() {
 			expect(() => {
-				this.b.plugin(function() {}, this.options);
+				this.app.plugin(function() {}, this.options);
 			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
 		});
 
 		it('returns `app` for chaining', function() {
-			expect(this.ret).to.equal(this.b);
+			expect(this.ret).to.equal(this.app);
 		});
 	});
 
 	describe('with arguments (plugin)', function() {
 		beforeEach(function() {
 			// NB name of function returned by `sinon.fake()` is 'proxy'
-			this.b = new Pluggi({proxy: this.globalOptions});
+			this.app = new Pluggi({proxy: this.globalOptions});
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.b.plugin(this.plugin);
+			this.ret = this.app.plugin(this.plugin);
 		});
 
 		it('calls plugin', function() {
@@ -192,37 +192,37 @@ describe('`.plugin()`', function() {
 		});
 
 		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.b);
+			expect(this.plugin).to.be.calledOn(this.app);
 		});
 
 		it('records plugin return value in plugins object', function() {
-			expect(this.b.plugins.proxy).to.equal(this.res);
+			expect(this.app.plugins.proxy).to.equal(this.res);
 		});
 
 		it('records empty object in plugins object when plugin returns undefined', function() {
-			this.b.plugin(function plugName2() {});
-			expect(this.b.plugins.plugName2).to.deep.equal({});
+			this.app.plugin(function plugName2() {});
+			expect(this.app.plugins.plugName2).to.deep.equal({});
 		});
 
 		it('throws when plugin function is nameless', function() {
 			expect(() => {
-				this.b.plugin(function() {});
+				this.app.plugin(function() {});
 			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
 		});
 
 		it('returns `app` for chaining', function() {
-			expect(this.ret).to.equal(this.b);
+			expect(this.ret).to.equal(this.app);
 		});
 	});
 
 	describe('with arguments (name, options)', function() {
 		describe('with no PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Pluggi({spyModule: this.globalOptions});
+				this.app = new Pluggi({spyModule: this.globalOptions});
 				this.options = {localOpt: 2};
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.ret = this.b.plugin('spy-module', this.options);
+				this.ret = this.app.plugin('spy-module', this.options);
 			});
 
 			afterEach(function() {
@@ -242,26 +242,26 @@ describe('`.plugin()`', function() {
 			});
 
 			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.b);
+				expect(this.plugin).to.be.calledOn(this.app);
 			});
 
 			it('records plugin return value in plugins object', function() {
-				expect(this.b.plugins.spyModule).to.equal(this.res);
+				expect(this.app.plugins.spyModule).to.equal(this.res);
 			});
 
 			it('returns `app` for chaining', function() {
-				expect(this.ret).to.equal(this.b);
+				expect(this.ret).to.equal(this.app);
 			});
 		});
 
 		describe('with PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Pluggi({'module': this.globalOptions});
-				this.b[Pluggi.PLUGIN_PREFIX] = 'spy';
+				this.app = new Pluggi({'module': this.globalOptions});
+				this.app[Pluggi.PLUGIN_PREFIX] = 'spy';
 				this.options = {localOpt: 2};
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.ret = this.b.plugin('module', this.options);
+				this.ret = this.app.plugin('module', this.options);
 			});
 
 			afterEach(function() {
@@ -281,15 +281,15 @@ describe('`.plugin()`', function() {
 			});
 
 			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.b);
+				expect(this.plugin).to.be.calledOn(this.app);
 			});
 
 			it('records plugin return value in plugins object', function() {
-				expect(this.b.plugins.module).to.equal(this.res);
+				expect(this.app.plugins.module).to.equal(this.res);
 			});
 
 			it('returns `app` for chaining', function() {
-				expect(this.ret).to.equal(this.b);
+				expect(this.ret).to.equal(this.app);
 			});
 		});
 	});
@@ -297,10 +297,10 @@ describe('`.plugin()`', function() {
 	describe('with arguments (name)', function() {
 		describe('with no PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Pluggi({spyModule: this.globalOptions});
+				this.app = new Pluggi({spyModule: this.globalOptions});
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.ret = this.b.plugin('spy-module');
+				this.ret = this.app.plugin('spy-module');
 			});
 
 			afterEach(function() {
@@ -316,25 +316,25 @@ describe('`.plugin()`', function() {
 			});
 
 			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.b);
+				expect(this.plugin).to.be.calledOn(this.app);
 			});
 
 			it('records plugin return value in plugins object', function() {
-				expect(this.b.plugins.spyModule).to.equal(this.res);
+				expect(this.app.plugins.spyModule).to.equal(this.res);
 			});
 
 			it('returns `app` for chaining', function() {
-				expect(this.ret).to.equal(this.b);
+				expect(this.ret).to.equal(this.app);
 			});
 		});
 
 		describe('with PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Pluggi({'module': this.globalOptions});
-				this.b[Pluggi.PLUGIN_PREFIX] = 'spy';
+				this.app = new Pluggi({'module': this.globalOptions});
+				this.app[Pluggi.PLUGIN_PREFIX] = 'spy';
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
-				this.ret = this.b.plugin('module');
+				this.ret = this.app.plugin('module');
 			});
 
 			afterEach(function() {
@@ -350,15 +350,15 @@ describe('`.plugin()`', function() {
 			});
 
 			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.b);
+				expect(this.plugin).to.be.calledOn(this.app);
 			});
 
 			it('records plugin return value in plugins object', function() {
-				expect(this.b.plugins.module).to.equal(this.res);
+				expect(this.app.plugins.module).to.equal(this.res);
 			});
 
 			it('returns `app` for chaining', function() {
-				expect(this.ret).to.equal(this.b);
+				expect(this.ret).to.equal(this.app);
 			});
 		});
 	});
