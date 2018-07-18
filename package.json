@@ -1,5 +1,5 @@
 {
-  "name": "baser",
+  "name": "pluggi",
   "version": "0.0.0",
   "description": "Base for building modularised apps with plugins",
   "main": "./lib/",
@@ -8,10 +8,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/overlookmotel/baser.git"
+    "url": "https://github.com/overlookmotel/pluggi.git"
   },
   "bugs": {
-    "url": "https://github.com/overlookmotel/baser/issues"
+    "url": "https://github.com/overlookmotel/pluggi/issues"
   },
   "dependencies": {},
   "devDependencies": {

@@ -1,5 +1,5 @@
 /* --------------------
- * baser module
+ * pluggi module
  * Tests
  * ------------------*/
 
@@ -11,7 +11,7 @@ const chai = require('chai'),
 	sinon = require('sinon'),
 	sinonChai = require('sinon-chai'),
 	spyModule = require('spy-module'),
-	Baser = require('../lib/');
+	Pluggi = require('../lib/');
 
 // Init
 chai.use(sinonChai);
@@ -25,11 +25,11 @@ chai.config.includeStack = true;
 describe('Constructor', function() {
 	beforeEach(function() {
 		this.options = {globalOpt: 1};
-		this.b = new Baser(this.options);
+		this.b = new Pluggi(this.options);
 	});
 
-	it('creates Baser instance', function() {
-		expect(this.b).to.be.instanceof(Baser);
+	it('creates Pluggi instance', function() {
+		expect(this.b).to.be.instanceof(Pluggi);
 	});
 
 	it('saves options', function() {
@@ -41,12 +41,12 @@ describe('Constructor', function() {
 	});
 
 	it('Exports static property PLUGIN_PREFIX', function() {
-		expect(Baser.PLUGIN_PREFIX).to.be.a('string');
+		expect(Pluggi.PLUGIN_PREFIX).to.be.a('string');
 	});
 
 	it('initializes [PLUGIN_PREFIX] as null', function() {
-		const b = new Baser();
-		expect(b[Baser.PLUGIN_PREFIX]).to.be.null;
+		const b = new Pluggi();
+		expect(b[Pluggi.PLUGIN_PREFIX]).to.be.null;
 	});
 });
 
@@ -57,7 +57,7 @@ describe('`.plugin()`', function() {
 
 	describe('with arguments (name, plugin, options)', function() {
 		beforeEach(function() {
-			this.b = new Baser({plugName: this.globalOptions});
+			this.b = new Pluggi({plugName: this.globalOptions});
 			this.options = {localOpt: 2};
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
@@ -92,7 +92,7 @@ describe('`.plugin()`', function() {
 
 	describe('with arguments (name, plugin)', function() {
 		beforeEach(function() {
-			this.b = new Baser({plugName: this.globalOptions});
+			this.b = new Pluggi({plugName: this.globalOptions});
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
 			this.b.plugin('plugName', this.plugin);
@@ -123,7 +123,7 @@ describe('`.plugin()`', function() {
 	describe('with arguments (plugin, options)', function() {
 		beforeEach(function() {
 			// NB name of function returned by `sinon.fake()` is 'proxy'
-			this.b = new Baser({proxy: this.globalOptions});
+			this.b = new Pluggi({proxy: this.globalOptions});
 			this.options = {localOpt: 2};
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
@@ -165,7 +165,7 @@ describe('`.plugin()`', function() {
 	describe('with arguments (plugin)', function() {
 		beforeEach(function() {
 			// NB name of function returned by `sinon.fake()` is 'proxy'
-			this.b = new Baser({proxy: this.globalOptions});
+			this.b = new Pluggi({proxy: this.globalOptions});
 			this.res = {resProp: 3};
 			this.plugin = sinon.fake.returns(this.res);
 			this.b.plugin(this.plugin);
@@ -202,7 +202,7 @@ describe('`.plugin()`', function() {
 	describe('with arguments (name, options)', function() {
 		describe('with no PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Baser({spyModule: this.globalOptions});
+				this.b = new Pluggi({spyModule: this.globalOptions});
 				this.options = {localOpt: 2};
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
@@ -236,8 +236,8 @@ describe('`.plugin()`', function() {
 
 		describe('with PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Baser({'module': this.globalOptions});
-				this.b[Baser.PLUGIN_PREFIX] = 'spy';
+				this.b = new Pluggi({'module': this.globalOptions});
+				this.b[Pluggi.PLUGIN_PREFIX] = 'spy';
 				this.options = {localOpt: 2};
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
@@ -273,7 +273,7 @@ describe('`.plugin()`', function() {
 	describe('with arguments (name)', function() {
 		describe('with no PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Baser({spyModule: this.globalOptions});
+				this.b = new Pluggi({spyModule: this.globalOptions});
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
 				this.b.plugin('spy-module');
@@ -302,8 +302,8 @@ describe('`.plugin()`', function() {
 
 		describe('with PLUGIN_PREFIX defined', function() {
 			beforeEach(function() {
-				this.b = new Baser({'module': this.globalOptions});
-				this.b[Baser.PLUGIN_PREFIX] = 'spy';
+				this.b = new Pluggi({'module': this.globalOptions});
+				this.b[Pluggi.PLUGIN_PREFIX] = 'spy';
 				this.res = spyModule.spyModuleReturnValue;
 				this.plugin = spyModule;
 				this.b.plugin('module');
