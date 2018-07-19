@@ -1,6 +1,6 @@
 {
   "name": "pluggi",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "Base for building modularised apps with plugins",
   "main": "./lib/",
   "author": {
