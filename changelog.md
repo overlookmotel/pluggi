@@ -7,4 +7,5 @@
 ## Next
 
 * `.plugin` calls plugin function with `(app, options)` [semver-major]
+* Plugin function return value conform to object [semver-major]
 * Fix changelog

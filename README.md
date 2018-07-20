@@ -88,7 +88,7 @@ app.plugin( 'myPlugin', () => ({ aProp: 123 }) );
 assert(app.plugins.myPlugin.aProp == 123);
 ```
 
-Return values must be truthy, or an empty object `{}` is used.
+Return value must be an object, or an empty object `{}` is used.
 
 ### Subclassing
 
