@@ -28,8 +28,8 @@ const app = new Pluggi( {
   myPlugin: { a: 1 }
 } );
 
-app.plugin( 'myPlugin', function(options) {
-  assert(this == app); // Plugin called with app instance
+app.plugin( 'myPlugin', function(_app, options) {
+  assert(_app == app); // Plugin called with app instance
   assert(options.a == 1); // Options keyed with the name of the plugin are passed
 } );
 ```
@@ -41,7 +41,7 @@ app.plugin( 'myPlugin', function(options) {
 #### Name + plugin function
 
 ```js
-app.plugin( 'myPlugin', function(options) {
+app.plugin( 'myPlugin', function(app, options) {
   /* ... */
 } );
 ```
@@ -51,7 +51,7 @@ app.plugin( 'myPlugin', function(options) {
 If function is named, plugin name is taken from the function name. This is equivalent to the above example:
 
 ```js
-app.plugin( function myPlugin(options) {
+app.plugin( function myPlugin(app, options) {
   /* ... */
 } );
 ```
@@ -67,6 +67,14 @@ assert(app.plugins.myAmazingPlugin);
 ```
 
 This calls `require('my-amazing-plugin')` internally. Note that the plugin name is converted to camel case.
+
+The module "my-amazing-plugin" should export a plugin function:
+
+```js
+module.exports = function myAmazingPlugin(app, options) {
+  /* ... */
+};
+```
 
 ### Plugin registry
 
@@ -124,8 +132,8 @@ const app = new Pluggi( {
 } );
 
 // Here is our plugin function
-function router(options) {
-	console.log(options);
+function router(app, options) {
+  console.log(options);
 }
 
 app.plugin( router, { localOpt: 456 } );
@@ -146,8 +154,8 @@ To ensure two plugins do not clash, it is recommended that they respect a namesp
 
 ```js
 // Example plugin
-function router(options) {
-  this.router = ...
+function router(app, options) {
+  app.router = ...
   return { bindToExpress: function() { ... } };
 }
 ```

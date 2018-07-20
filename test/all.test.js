@@ -74,16 +74,20 @@ describe('`.plugin()`', function() {
 			expect(this.plugin).to.be.calledOnce;
 		});
 
+		it('calls plugin with 2 args', function() {
+			expectCalledWithTwoArgs(this.plugin);
+		});
+
+		it('calls plugin with app', function() {
+			expectCalledWithFirstArg(this.plugin, this.app);
+		});
+
 		it('calls plugin with provided options', function() {
-			expect(this.plugin).to.be.calledWithExactly(sinon.match(this.options));
+			expectCalledWithSecondArg(this.plugin, sinon.match(this.options));
 		});
 
 		it('calls plugin with global options', function() {
-			expect(this.plugin).to.be.calledWithExactly(sinon.match(this.globalOptions));
-		});
-
-		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.app);
+			expectCalledWithSecondArg(this.plugin, sinon.match(this.globalOptions));
 		});
 
 		it('records plugin return value in plugins object', function() {
@@ -112,12 +116,16 @@ describe('`.plugin()`', function() {
 			expect(this.plugin).to.be.calledOnce;
 		});
 
-		it('calls plugin with global options', function() {
-			expect(this.plugin).to.be.calledWithExactly(this.globalOptions);
+		it('calls plugin with 2 args', function() {
+			expectCalledWithTwoArgs(this.plugin);
 		});
 
-		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.app);
+		it('calls plugin with app', function() {
+			expectCalledWithFirstArg(this.plugin, this.app);
+		});
+
+		it('calls plugin with global options', function() {
+			expectCalledWithSecondArg(this.plugin, this.globalOptions);
 		});
 
 		it('records plugin return value in plugins object', function() {
@@ -148,16 +156,20 @@ describe('`.plugin()`', function() {
 			expect(this.plugin).to.be.calledOnce;
 		});
 
+		it('calls plugin with 2 args', function() {
+			expectCalledWithTwoArgs(this.plugin);
+		});
+
+		it('calls plugin with app', function() {
+			expectCalledWithFirstArg(this.plugin, this.app);
+		});
+
 		it('calls plugin with provided options', function() {
-			expect(this.plugin).to.be.calledWithExactly(sinon.match(this.options));
+			expectCalledWithSecondArg(this.plugin, sinon.match(this.options));
 		});
 
 		it('calls plugin with global options', function() {
-			expect(this.plugin).to.be.calledWithExactly(sinon.match(this.globalOptions));
-		});
-
-		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.app);
+			expectCalledWithSecondArg(this.plugin, sinon.match(this.globalOptions));
 		});
 
 		it('records plugin return value in plugins object', function() {
@@ -193,12 +205,16 @@ describe('`.plugin()`', function() {
 			expect(this.plugin).to.be.calledOnce;
 		});
 
-		it('calls plugin with global options', function() {
-			expect(this.plugin).to.be.calledWithExactly(this.globalOptions);
+		it('calls plugin with 2 args', function() {
+			expectCalledWithTwoArgs(this.plugin);
 		});
 
-		it('calls plugin with context', function() {
-			expect(this.plugin).to.be.calledOn(this.app);
+		it('calls plugin with app', function() {
+			expectCalledWithFirstArg(this.plugin, this.app);
+		});
+
+		it('calls plugin with global options', function() {
+			expectCalledWithSecondArg(this.plugin, this.globalOptions);
 		});
 
 		it('records plugin return value in plugins object', function() {
@@ -239,16 +255,20 @@ describe('`.plugin()`', function() {
 				expect(this.plugin).to.be.calledOnce;
 			});
 
+			it('calls plugin with 2 args', function() {
+				expectCalledWithTwoArgs(this.plugin);
+			});
+
+			it('calls plugin with app', function() {
+				expectCalledWithFirstArg(this.plugin, this.app);
+			});
+
 			it('calls plugin with provided options', function() {
-				expect(this.plugin).to.be.calledWithExactly(sinon.match(this.options));
+				expectCalledWithSecondArg(this.plugin, sinon.match(this.options));
 			});
 
 			it('calls plugin with global options', function() {
-				expect(this.plugin).to.be.calledWithExactly(sinon.match(this.globalOptions));
-			});
-
-			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.app);
+				expectCalledWithSecondArg(this.plugin, sinon.match(this.globalOptions));
 			});
 
 			it('records plugin return value in plugins object', function() {
@@ -278,16 +298,20 @@ describe('`.plugin()`', function() {
 				expect(this.plugin).to.be.calledOnce;
 			});
 
+			it('calls plugin with 2 args', function() {
+				expectCalledWithTwoArgs(this.plugin);
+			});
+
+			it('calls plugin with app', function() {
+				expectCalledWithFirstArg(this.plugin, this.app);
+			});
+
 			it('calls plugin with provided options', function() {
-				expect(this.plugin).to.be.calledWithExactly(sinon.match(this.options));
+				expectCalledWithSecondArg(this.plugin, sinon.match(this.options));
 			});
 
 			it('calls plugin with global options', function() {
-				expect(this.plugin).to.be.calledWithExactly(sinon.match(this.globalOptions));
-			});
-
-			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.app);
+				expectCalledWithSecondArg(this.plugin, sinon.match(this.globalOptions));
 			});
 
 			it('records plugin return value in plugins object', function() {
@@ -317,12 +341,16 @@ describe('`.plugin()`', function() {
 				expect(this.plugin).to.be.calledOnce;
 			});
 
-			it('calls plugin with global options', function() {
-				expect(this.plugin).to.be.calledWithExactly(this.globalOptions);
+			it('calls plugin with 2 args', function() {
+				expectCalledWithTwoArgs(this.plugin);
 			});
 
-			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.app);
+			it('calls plugin with app', function() {
+				expectCalledWithFirstArg(this.plugin, this.app);
+			});
+
+			it('calls plugin with global options', function() {
+				expectCalledWithSecondArg(this.plugin, this.globalOptions);
 			});
 
 			it('records plugin return value in plugins object', function() {
@@ -351,12 +379,16 @@ describe('`.plugin()`', function() {
 				expect(this.plugin).to.be.calledOnce;
 			});
 
-			it('calls plugin with global options', function() {
-				expect(this.plugin).to.be.calledWithExactly(this.globalOptions);
+			it('calls plugin with 2 args', function() {
+				expectCalledWithTwoArgs(this.plugin);
 			});
 
-			it('calls plugin with context', function() {
-				expect(this.plugin).to.be.calledOn(this.app);
+			it('calls plugin with app', function() {
+				expectCalledWithFirstArg(this.plugin, this.app);
+			});
+
+			it('calls plugin with global options', function() {
+				expectCalledWithSecondArg(this.plugin, this.globalOptions);
 			});
 
 			it('records plugin return value in plugins object', function() {
@@ -369,3 +401,18 @@ describe('`.plugin()`', function() {
 		});
 	});
 });
+
+/*
+ * Helper functions
+ */
+function expectCalledWithTwoArgs(spy) {
+	expect(spy).to.be.calledWithExactly(sinon.match.defined, sinon.match.defined);
+}
+
+function expectCalledWithFirstArg(spy, arg) {
+	expect(spy).to.be.calledWith(arg);
+}
+
+function expectCalledWithSecondArg(spy, arg) {
+	expect(spy).to.be.calledWith(sinon.match.any, arg);
+}

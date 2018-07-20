@@ -6,4 +6,5 @@
 
 ## Next
 
+* `.plugin` calls plugin function with `(app, options)` [semver-major]
 * Fix changelog
