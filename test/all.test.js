@@ -41,7 +41,7 @@ describe('Constructor', function() {
 	it('creates empty options object if no options passed', function() {
 		app = new Pluggi();
 		expect(app.options).to.be.an('object');
-		expect(app.options).to.deep.equal({});
+		expect(app.options).to.deep.equal({plugin: {}, plugins: {}});
 	});
 
 	it('initializes `plugins` object', function() {
