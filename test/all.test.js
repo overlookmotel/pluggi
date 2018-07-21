@@ -11,7 +11,8 @@ const chai = require('chai'),
 	sinon = require('sinon'),
 	sinonChai = require('sinon-chai'),
 	spyModule = require('spy-module'),
-	Pluggi = require('../lib/');
+	Pluggi = require('../lib/'),
+	{Plugin} = Pluggi;
 
 // Init
 chai.use(sinonChai);
@@ -43,16 +44,11 @@ describe('Constructor', function() {
 		expect(app.options).to.deep.equal({});
 	});
 
-	it('initializes empty `plugins` object', function() {
-		expect(app.plugins).to.deep.equal({});
-	});
-
-	it('Exports static property PLUGIN_PREFIX', function() {
-		expect(Pluggi.PLUGIN_PREFIX).to.be.a('string');
-	});
-
-	it('initializes [PLUGIN_PREFIX] as null', function() {
-		expect(app[Pluggi.PLUGIN_PREFIX]).to.be.null;
+	it('initializes `plugins` object', function() {
+		expect(app.plugins).to.be.an('object');
+		expect(app.plugins).to.have.keys('plugin', 'plugins');
+		expect(app.plugins.plugin).to.be.instanceof(Plugin);
+		expect(app.plugins.plugins).to.be.instanceof(Plugin);
 	});
 });
 
@@ -94,27 +90,25 @@ describe('`.plugin()`', function() {
 			spyModule.resetHistory();
 		});
 
-		describe('with no PLUGIN_PREFIX defined', function() {
+		describe('with no prefixes defined', function() {
 			pluginTests({
 				makeArgs: (name, plugin, options) => [name, options], // jshint ignore:line
 				name: 'spyModule',
 				loadName: 'spy-module',
 				plugin: spyModule,
 				res: spyModule.spyModuleReturnValue,
-				localOptions: true,
-				skipEmptyObject: true
+				localOptions: true
 			});
 		});
 
-		describe('with PLUGIN_PREFIX defined', function() {
+		describe('with prefix defined', function() {
 			pluginTests({
 				makeArgs: (name, plugin, options) => [name, options], // jshint ignore:line
-				prep: app => app[Pluggi.PLUGIN_PREFIX] = 'spy',
+				prep: app => app.plugins.plugins.addPrefix('spy'),
 				name: 'module',
 				plugin: spyModule,
 				res: spyModule.spyModuleReturnValue,
-				localOptions: true,
-				skipEmptyObject: true
+				localOptions: true
 			});
 		});
 	});
@@ -124,27 +118,25 @@ describe('`.plugin()`', function() {
 			spyModule.resetHistory();
 		});
 
-		describe('with no PLUGIN_PREFIX defined', function() {
+		describe('with no prefixes defined', function() {
 			pluginTests({
 				makeArgs: (name, plugin, options) => [name], // jshint ignore:line
 				name: 'spyModule',
 				loadName: 'spy-module',
 				plugin: spyModule,
 				res: spyModule.spyModuleReturnValue,
-				localOptions: false,
-				skipEmptyObject: true
+				localOptions: false
 			});
 		});
 
-		describe('with PLUGIN_PREFIX defined', function() {
+		describe('with prefix defined', function() {
 			pluginTests({
 				makeArgs: (name, plugin, options) => [name], // jshint ignore:line
-				prep: app => app[Pluggi.PLUGIN_PREFIX] = 'spy',
+				prep: app => app.plugins.plugins.addPrefix('spy'),
 				name: 'module',
 				plugin: spyModule,
 				res: spyModule.spyModuleReturnValue,
-				localOptions: false,
-				skipEmptyObject: true
+				localOptions: false
 			});
 		});
 	});
@@ -191,30 +183,18 @@ function pluginTests(opts) {
 	});
 
 	if (opts.localOptions) {
-		it('calls plugin with provided options', function() {
+		it('calls plugin with local options', function() {
 			expectCalledWithSecondArg(plugin, sinon.match(options));
 		});
-
-		it('calls plugin with global options', function() {
-			expectCalledWithSecondArg(plugin, sinon.match(globalOptions));
-		});
-	} else {
-		it('calls plugin with global options', function() {
-			expectCalledWithSecondArg(plugin, globalOptions);
-		});
 	}
 
-	it('records plugin return value in plugins object', function() {
-		expect(app.plugins[name]).to.equal(res);
+	it('calls plugin with global options', function() {
+		expectCalledWithSecondArg(plugin, sinon.match(globalOptions));
 	});
 
-	if (!opts.skipEmptyObject) {
-		it('records empty object in plugins object when plugin returns undefined', function() {
-			const args = makeArgs(name2, function plugName2() {}, options);
-			app.plugin.apply(app, args);
-			expect(app.plugins[name2]).to.deep.equal({});
-		});
-	}
+	it('records plugin return value in plugins object', function() {
+		expectProps(app.plugins[name], this.res);
+	});
 
 	if (opts.throwsWhenNameless) {
 		it('throws when plugin function is nameless', function() {
@@ -222,7 +202,7 @@ function pluginTests(opts) {
 
 			expect(() => {
 				app.plugin.apply(app, args);
-			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
+			}).to.throw(Error, /^name must be provided, or plugin must have name defined, or plugin function must be named$/);
 		});
 	}
 
@@ -244,4 +224,10 @@ function expectCalledWithFirstArg(spy, arg) {
 
 function expectCalledWithSecondArg(spy, arg) {
 	expect(spy).to.be.calledWith(sinon.match.any, arg);
+}
+
+function expectProps(obj, props) {
+	for (let prop in props) {
+		expect(obj).to.have.property(prop, props[prop]);
+	}
 }
