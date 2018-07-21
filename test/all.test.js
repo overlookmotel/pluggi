@@ -35,13 +35,13 @@ describe('Constructor', function() {
 	});
 
 	it('saves options', function() {
-		expect(app.options).to.equal(options);
+		expect(app._options).to.equal(options);
 	});
 
 	it('creates empty options object if no options passed', function() {
 		app = new Pluggi();
-		expect(app.options).to.be.an('object');
-		expect(app.options).to.deep.equal({plugin: {}, plugins: {}});
+		expect(app._options).to.be.an('object');
+		expect(app._options).to.deep.equal({});
 	});
 
 	it('initializes `plugins` object', function() {
