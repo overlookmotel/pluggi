@@ -23,27 +23,28 @@ chai.config.includeStack = true;
 /* global describe, it, beforeEach, afterEach */
 
 describe('Constructor', function() {
+	let app, options;
 	beforeEach(function() {
-		this.options = {globalOpt: 1};
-		this.app = new Pluggi(this.options);
+		options = {globalOpt: 1};
+		app = new Pluggi(options);
 	});
 
 	it('creates Pluggi instance', function() {
-		expect(this.app).to.be.instanceof(Pluggi);
+		expect(app).to.be.instanceof(Pluggi);
 	});
 
 	it('saves options', function() {
-		expect(this.app.options).to.equal(this.options);
+		expect(app.options).to.equal(options);
 	});
 
 	it('creates empty options object if no options passed', function() {
-		this.app = new Pluggi();
-		expect(this.app.options).to.be.an('object');
-		expect(this.app.options).to.deep.equal({});
+		app = new Pluggi();
+		expect(app.options).to.be.an('object');
+		expect(app.options).to.deep.equal({});
 	});
 
 	it('initializes empty `plugins` object', function() {
-		expect(this.app.plugins).to.deep.equal({});
+		expect(app.plugins).to.deep.equal({});
 	});
 
 	it('Exports static property PLUGIN_PREFIX', function() {
@@ -51,216 +52,182 @@ describe('Constructor', function() {
 	});
 
 	it('initializes [PLUGIN_PREFIX] as null', function() {
-		const b = new Pluggi();
-		expect(b[Pluggi.PLUGIN_PREFIX]).to.be.null;
+		expect(app[Pluggi.PLUGIN_PREFIX]).to.be.null;
 	});
 });
 
 describe('`.plugin()`', function() {
-	beforeEach(function() {
-		this.pluginName = 'plugName';
-		this.pluginName2 = 'plugName2';
-		this.globalOptions = {globalOpt: 1};
-	});
-
 	describe('with arguments (name, plugin, options)', function() {
-		beforeEach(function() {
-			this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-			this.options = {localOpt: 2};
-			this.res = {resProp: 3};
-			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.app.plugin(this.pluginName, this.plugin, this.options);
-			this.app.plugin(this.pluginName2, () => {}, this.options);
+		pluginTests({
+			makeArgs: (name, plugin, options) => [name, plugin, options],
+			localOptions: true
 		});
-
-		pluginTests({localOptions: true});
 	});
 
 	describe('with arguments (name, plugin)', function() {
-		beforeEach(function() {
-			this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-			this.res = {resProp: 3};
-			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.app.plugin('plugName', this.plugin);
-			this.app.plugin(this.pluginName2, () => {});
+		pluginTests({
+			makeArgs: (name, plugin, options) => [name, plugin], // jshint ignore:line
+			localOptions: false
 		});
-
-		pluginTests({localOptions: false});
 	});
 
 	describe('with arguments (plugin, options)', function() {
-		beforeEach(function() {
-			this.pluginName = 'proxy';
-			// NB name of function returned by `sinon.fake()` is 'proxy'
-			this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-			this.options = {localOpt: 2};
-			this.res = {resProp: 3};
-			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.app.plugin(this.plugin, this.options);
-			this.app.plugin(function plugName2() {}, this.options);
-		});
-
-		pluginTests({localOptions: true});
-
-		it('throws when plugin function is nameless', function() {
-			expect(() => {
-				this.app.plugin(function() {}, this.options);
-			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
+		pluginTests({
+			makeArgs: (name, plugin, options) => [plugin, options], // jshint ignore:line
+			name: 'proxy', // name of function returned by `sinon.fake()` is 'proxy'
+			localOptions: true,
+			throwsWhenNameless: true
 		});
 	});
 
 	describe('with arguments (plugin)', function() {
-		beforeEach(function() {
-			this.pluginName = 'proxy';
-			// NB name of function returned by `sinon.fake()` is 'proxy'
-			this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-			this.res = {resProp: 3};
-			this.plugin = sinon.fake.returns(this.res);
-			this.ret = this.app.plugin(this.plugin);
-			this.app.plugin(function plugName2() {});
-		});
-
-		pluginTests({localOptions: false});
-
-		it('throws when plugin function is nameless', function() {
-			expect(() => {
-				this.app.plugin(function() {});
-			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
+		pluginTests({
+			makeArgs: (name, plugin, options) => [plugin], // jshint ignore:line
+			name: 'proxy', // name of function returned by `sinon.fake()` is 'proxy'
+			localOptions: false,
+			throwsWhenNameless: true
 		});
 	});
 
 	describe('with arguments (name, options)', function() {
+		afterEach(function() {
+			spyModule.resetHistory();
+		});
+
 		describe('with no PLUGIN_PREFIX defined', function() {
-			beforeEach(function() {
-				this.pluginName = 'spyModule';
-				this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-				this.options = {localOpt: 2};
-				this.res = spyModule.spyModuleReturnValue;
-				this.plugin = spyModule;
-				this.ret = this.app.plugin('spy-module', this.options);
+			pluginTests({
+				makeArgs: (name, plugin, options) => [name, options], // jshint ignore:line
+				name: 'spyModule',
+				loadName: 'spy-module',
+				plugin: spyModule,
+				res: spyModule.spyModuleReturnValue,
+				localOptions: true,
+				skipEmptyObject: true
 			});
-
-			afterEach(function() {
-				spyModule.resetHistory();
-			});
-
-			pluginTests({localOptions: true, skipEmptyObject: true});
 		});
 
 		describe('with PLUGIN_PREFIX defined', function() {
-			beforeEach(function() {
-				this.pluginName = 'module';
-				this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-				this.app[Pluggi.PLUGIN_PREFIX] = 'spy';
-				this.options = {localOpt: 2};
-				this.res = spyModule.spyModuleReturnValue;
-				this.plugin = spyModule;
-				this.ret = this.app.plugin('module', this.options);
+			pluginTests({
+				makeArgs: (name, plugin, options) => [name, options], // jshint ignore:line
+				prep: app => app[Pluggi.PLUGIN_PREFIX] = 'spy',
+				name: 'module',
+				plugin: spyModule,
+				res: spyModule.spyModuleReturnValue,
+				localOptions: true,
+				skipEmptyObject: true
 			});
-
-			afterEach(function() {
-				spyModule.resetHistory();
-			});
-
-			pluginTests({localOptions: true, skipEmptyObject: true});
 		});
 	});
 
 	describe('with arguments (name)', function() {
+		afterEach(function() {
+			spyModule.resetHistory();
+		});
+
 		describe('with no PLUGIN_PREFIX defined', function() {
-			beforeEach(function() {
-				this.pluginName = 'spyModule';
-				this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-				this.res = spyModule.spyModuleReturnValue;
-				this.plugin = spyModule;
-				this.ret = this.app.plugin('spy-module');
+			pluginTests({
+				makeArgs: (name, plugin, options) => [name], // jshint ignore:line
+				name: 'spyModule',
+				loadName: 'spy-module',
+				plugin: spyModule,
+				res: spyModule.spyModuleReturnValue,
+				localOptions: false,
+				skipEmptyObject: true
 			});
-
-			afterEach(function() {
-				spyModule.resetHistory();
-			});
-
-			pluginTests({localOptions: false, skipEmptyObject: true});
 		});
 
 		describe('with PLUGIN_PREFIX defined', function() {
-			beforeEach(function() {
-				this.pluginName = 'module';
-				this.app = new Pluggi({[this.pluginName]: this.globalOptions});
-				this.app[Pluggi.PLUGIN_PREFIX] = 'spy';
-				this.res = spyModule.spyModuleReturnValue;
-				this.plugin = spyModule;
-				this.ret = this.app.plugin('module');
+			pluginTests({
+				makeArgs: (name, plugin, options) => [name], // jshint ignore:line
+				prep: app => app[Pluggi.PLUGIN_PREFIX] = 'spy',
+				name: 'module',
+				plugin: spyModule,
+				res: spyModule.spyModuleReturnValue,
+				localOptions: false,
+				skipEmptyObject: true
 			});
-
-			afterEach(function() {
-				spyModule.resetHistory();
-			});
-
-			pluginTests({localOptions: false, skipEmptyObject: true});
 		});
 	});
 });
 
-function runTests(makePluginArgs, opts) {
-	let app, pluginName, pluginName2, globalOptions, options, res, plugin, ret;
+function pluginTests(opts) {
+	if (!opts) opts = {};
+	const {makeArgs} = opts;
+
+	let app, plugin, name, name2, loadName,
+		globalOptions, options, res, ret;
 	beforeEach(function() {
-		({pluginName, pluginName2, globalOptions, options, res, plugin} = Object.assign({
-			pluginName: 'plugName',
-			pluginName2: 'plugName2',
-			globalOptions: {globalOpt: 1},
+		({name, name2, loadName, plugin, globalOptions, options, res} = Object.assign({
+			name: 'plugName',
+			name2: 'plugName2',
+			loadName: null,
+			plugin: null,
 			options: {localOpt: 2},
-			res: {resProp: 3},
-			plugin: sinon.fake.returns(res)
+			globalOptions: {globalOpt: 1},
+			res: {resProp: 3}
 		}, opts));
 
-		app = new Pluggi({[pluginName]: globalOptions});
-		const args = makePluginArgs(app, pluginName, plugin, options);
-		app.plugin.apply(app, args);
-	});
-}
+		if (loadName === null) loadName = name;
+		if (!plugin) plugin = sinon.fake.returns(res);
 
-function pluginTests(options) {
-	if (!options) options = {};
+		app = new Pluggi({[name]: globalOptions});
+
+		if (opts.prep) opts.prep(app);
+
+		const args = makeArgs(loadName, plugin, options);
+		ret = app.plugin.apply(app, args);
+	});
 
 	it('calls plugin', function() {
-		expect(this.plugin).to.be.calledOnce;
+		expect(plugin).to.be.calledOnce;
 	});
 
 	it('calls plugin with 2 args', function() {
-		expectCalledWithTwoArgs(this.plugin);
+		expectCalledWithTwoArgs(plugin);
 	});
 
 	it('calls plugin with app', function() {
-		expectCalledWithFirstArg(this.plugin, this.app);
+		expectCalledWithFirstArg(plugin, app);
 	});
 
-	if (options.localOptions) {
+	if (opts.localOptions) {
 		it('calls plugin with provided options', function() {
-			expectCalledWithSecondArg(this.plugin, sinon.match(this.options));
+			expectCalledWithSecondArg(plugin, sinon.match(options));
 		});
 
 		it('calls plugin with global options', function() {
-			expectCalledWithSecondArg(this.plugin, sinon.match(this.globalOptions));
+			expectCalledWithSecondArg(plugin, sinon.match(globalOptions));
 		});
 	} else {
 		it('calls plugin with global options', function() {
-			expectCalledWithSecondArg(this.plugin, this.globalOptions);
+			expectCalledWithSecondArg(plugin, globalOptions);
 		});
 	}
 
 	it('records plugin return value in plugins object', function() {
-		expect(this.app.plugins[this.pluginName]).to.equal(this.res);
+		expect(app.plugins[name]).to.equal(res);
 	});
 
-	if (!options.skipEmptyObject) {
+	if (!opts.skipEmptyObject) {
 		it('records empty object in plugins object when plugin returns undefined', function() {
-			expect(this.app.plugins[this.pluginName2]).to.deep.equal({});
+			const args = makeArgs(name2, function plugName2() {}, options);
+			app.plugin.apply(app, args);
+			expect(app.plugins[name2]).to.deep.equal({});
+		});
+	}
+
+	if (opts.throwsWhenNameless) {
+		it('throws when plugin function is nameless', function() {
+			const args = makeArgs(name2, function() {}, options);
+
+			expect(() => {
+				app.plugin.apply(app, args);
+			}).to.throw(Error, /^name passed to `\.plugin\(\)` must be provided or plugin function must be named$/);
 		});
 	}
 
 	it('returns `app` for chaining', function() {
-		expect(this.ret).to.equal(this.app);
+		expect(ret).to.equal(app);
 	});
 }
 
