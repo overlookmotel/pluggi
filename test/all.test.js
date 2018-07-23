@@ -111,6 +111,8 @@ describe('`.plugin()`', function() {
 				localOptions: true
 			});
 		});
+
+		// TODO Add tests for @-scoped prefix
 	});
 
 	describe('with arguments (name)', function() {

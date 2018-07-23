@@ -120,6 +120,8 @@ assert(app.plugins.express);
 
 The plugins are registered as `router` and `express`, but the npm modules which were required were called 'monkey-router' and 'monkey-express'.
 
+Scoped prefixes also work. e.g. with prefix '@monkey', 'routes' will be loaded from '@monkey/routes'.
+
 NB `PLUGIN_PREFIX` is currently a string, but it may be changed to a `Symbol` in a future version. This will not be considered a semver major change, so always use it via `Pluggi.PLUGIN_PREFIX`.
 
 ### Options
